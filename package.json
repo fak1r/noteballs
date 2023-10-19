@@ -7,7 +7,9 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "vue": "^3.2.13"
+    "bulma": "^0.9.4",
+    "vue": "^3.2.13",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@vue/cli-service": "~5.0.0"
