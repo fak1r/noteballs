@@ -1,53 +1,60 @@
 <template>
   <div class="notes">
 
-    <div class="card has-background-warning-light mt-4 p-4 mb-5">
-      <div class="field mt-4">
-        <div class="control">
-          <textarea class="textarea" placeholder="New note"></textarea>
-        </div>
-      </div>
 
-      <div class="field is-grouped is-grouped-right">
-        <div class="control">
-          <button class="button is-link">Add New Note</button>
-        </div>
-        <div class="control">
-          <button class="button is-link is-light">Cancel</button>
-        </div>
-      </div>
-    </div>
-    
-    <div
-      v-for="note in notes"
-      class="card mt-4"
-      :key="note.id"
+    <AddEditNote
+      v-model="newNote"
+      ref="addEditNoteRef"
     >
-      <div class="card-content">
-        <div class="content">
-          {{ note.content }}
-        </div>
-      </div>
-      <footer class="card-footer">
-        <a href="#" class="card-footer-item">Edit</a>
-        <a href="#" class="card-footer-item">Delete</a>
-      </footer>
-    </div>
+      <template #buttons>
+        <button
+          @click="addNote"
+          :disabled="!newNote"
+          class="button is-link"
+        >
+          Add New Note
+        </button>
+        <button
+          @click="clearTextArea"
+          class="button is-link is-light"
+        >Clear
+        </button>
+      </template>
+    </AddEditNote>
+
+    <Note
+      v-for="note in storeNotes.notes"
+      :key="note.id"
+      :note="note"
+    >
+    </Note>
+    
   </div>
 </template>
 
 <script setup>
 
   import { ref } from 'vue';
+  import Note from '@/components/notes/Note.vue'
+  import AddEditNote from '@/components/notes/AddEditNote.vue'
+  import { useStoreNotes } from '@/stores/storeNotes'
 
-  const notes = ref([
-    {
-      id: 'id1',
-      content: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem quas sed atque iure, amet deserunt aspernatur necessitatibus officia rerum facilis minima, ullam nisi excepturi, temporibus beatae deleniti veniam porro maxime.'
-    },
-    {
-      id: 'id2',
-      content: 'Short note'
-    }
-  ])
+  const storeNotes = useStoreNotes();
+
+  const newNote = ref('');
+  const newNoteRef = ref(null);
+  const addEditNoteRef = ref(null);
+
+  const addNote = () => {
+    storeNotes.addNote(newNote.value);
+
+    newNote.value = '';
+
+    addEditNoteRef.value.focusTextarea();
+  }
+
+  const clearTextArea = () => {
+    newNote.value = '';
+  }
+  
 </script>
