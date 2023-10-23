@@ -5,6 +5,7 @@
     <AddEditNote
       v-model="newNote"
       ref="addEditNoteRef"
+      placeholder="Add new note"
     >
       <template #buttons>
         <button
@@ -17,7 +18,8 @@
         <button
           @click="clearTextArea"
           class="button is-link is-light"
-        >Clear
+        >
+          Clear
         </button>
       </template>
     </AddEditNote>
@@ -37,7 +39,8 @@
   import { ref } from 'vue';
   import Note from '@/components/notes/Note.vue'
   import AddEditNote from '@/components/notes/AddEditNote.vue'
-  import { useStoreNotes } from '@/stores/storeNotes'
+  import { useStoreNotes } from '@/stores/storeNotes.js'
+  import { useWatchCharacters } from '@/use/useWatchCharacters.js'
 
   const storeNotes = useStoreNotes();
 
@@ -56,5 +59,7 @@
   const clearTextArea = () => {
     newNote.value = '';
   }
+
+  useWatchCharacters(newNote, 100);
   
 </script>
