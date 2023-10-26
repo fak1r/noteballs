@@ -6,8 +6,13 @@
       <div class="content">
         {{ note.content }}
       </div>
-      <div class="has-text-right has-text-grey-light mt-2">
-        <small>{{ charactersLength }} character{{ charactersLength == 1 ? '' : "s" }}</small>
+      <div class="columns is-mobile has-text-grey-light mt-2">
+        <small class="column has-text-left">
+          {{ dateFormated }}
+        </small>
+        <small class="column has-text-right">
+          {{ charactersLength }} character{{ charactersLength == 1 ? '' : "s" }}
+        </small>
       </div>
     </div>
     <footer class="card-footer">
@@ -38,6 +43,7 @@
   import { computed, reactive } from 'vue';
   import  { useStoreNotes } from '@/stores/storeNotes'
   import ModalDeleteNote from '@/components/notes/ModalDeleteNote.vue'
+  import { useDateFormat } from '@vueuse/core'
 
   const storeNotes = useStoreNotes();
 
@@ -52,6 +58,12 @@
 
   const modals = reactive({
     deleteNote: false
+  })
+
+  const dateFormated = computed(() => {
+    let date = new Date(parseInt(props.note.date));
+    let formattedDate = useDateFormat(date, 'DD-MM-YYYY @ HH:mm:ss');
+    return formattedDate.value;
   })
 
 </script>

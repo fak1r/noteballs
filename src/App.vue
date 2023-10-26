@@ -8,7 +8,14 @@
 <script setup>
 
   import NavBar from '@/components/layout/NavBar.vue'
- 
+  import { useStoreAuth } from '@/stores/storeAuth'
+  import { onMounted } from 'vue';
+
+  const storeAuth = useStoreAuth();
+
+  onMounted(() => {
+    storeAuth.init();
+  })
 
 </script>
 

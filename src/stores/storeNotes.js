@@ -1,33 +1,78 @@
 import { defineStore } from 'pinia'
+import { 
+  collection, onSnapshot, 
+  doc, deleteDoc, updateDoc, addDoc,
+  query, orderBy
+} from "firebase/firestore";
+import { db } from '@/js/firebase'
+import { useStoreAuth } from '@/stores/storeAuth';
+
+let notesCollectionRef;
+let notesCollectionQuery;
+let getNotesSnapshot = null;
 
 export const useStoreNotes = defineStore('storeNotes', {
   state: () => ({
     notes: [
+      /* local storage
       {
         id: 'id1',
-        content: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem quas sed atque iure, amet deserunt aspernatur necessitatibus officia rerum facilis minima, ullam nisi excepturi, temporibus beatae deleniti veniam porro maxime.'
+        content: 'Lorem ipsum'
       },
       {
         id: 'id2',
         content: 'Short note'
-      }
-    ]
+      } */
+    ],
+    notesLoaded: false
   }),
   actions: {
-    addNote(newNoteContent){
-      let id = new Date().getTime().toString().slice(-5);
-      let note = {
-        id,
-        content: newNoteContent
-      }
+    init(){
+      const storeAuth = useStoreAuth();
 
-      this.notes.unshift(note); 
+      notesCollectionRef = collection(db, "users", storeAuth.user.id, "notes");
+      notesCollectionQuery = query(notesCollectionRef, orderBy("date", "desc"));
+      this.getNotes();
     },
-    deleteNote(id){ 
-      this.notes = this.notes.filter(el => el.id !== id);
+    async getNotes(){
+      this.notesLoaded = false;
+
+      if (getNotesSnapshot) getNotesSnapshot(); // unsubscribe from any active listener
+
+      getNotesSnapshot = onSnapshot(notesCollectionQuery, (querySnapshot) => {
+        let notes = [];
+        querySnapshot.forEach((doc) => {
+          let note = {
+            id: doc.id,
+            content: doc.data().content,
+            date: doc.data().date
+          }
+          notes.push(note)
+        });
+        this.notes = notes;
+        this.notesLoaded = true;
+      }, error => {
+        console.log('error.message: ', error.message);
+      });
     },
-    updateNote(id, content){
-      this.notes.find(el => el.id === id).content = content;
+    clearNotes(){
+      this.notes = [];
+      if (getNotesSnapshot) getNotesSnapshot(); // unsubscribe from any active listener
+    },
+    async addNote(newNoteContent){
+      let date = new Date().getTime().toString();
+      await addDoc(notesCollectionRef, {
+        content: newNoteContent,
+        date
+      });
+    },
+    async deleteNote(id){  
+      await deleteDoc(doc(notesCollectionRef, id));
+    },
+    async updateNote(id, content){
+      await updateDoc(doc(notesCollectionRef, id), {
+        content
+      });
     }
   },
   getters: {

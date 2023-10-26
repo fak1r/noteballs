@@ -43,6 +43,19 @@
               class="navbar-item"
               active-class="is-active">Stats</router-link
             >
+            <router-link
+              @click="showMobileNav = false"
+              :to="{ name: 'auth'}"
+              class="navbar-item"
+              active-class="is-active">Autorization</router-link
+            >
+            <button
+              v-if="storeAuth.user.id"
+              @click="logout"
+              class="button is-small is-info mt-3 mb-3"
+            >
+              Log out {{ storeAuth.user.email }}
+            </button>
           </div>
         </div>
       </div>
@@ -53,7 +66,9 @@
 
   import { ref } from 'vue';
   import { onClickOutside } from '@vueuse/core'
+  import { useStoreAuth } from '@/stores/storeAuth';
 
+  const storeAuth = useStoreAuth();
   const showMobileNav = ref(false);
   const navbarMenuRef = ref(null);
   const navbarBurgerRef = ref(null);
@@ -62,6 +77,10 @@
     showMobileNav.value = false;
   }, { ignore: [navbarBurgerRef] });
 
+  const logout = () => {
+    showMobileNav.value = false;
+    storeAuth.logoutUser();
+  }
 </script>
 
 <style>
