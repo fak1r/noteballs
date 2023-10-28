@@ -5,6 +5,5 @@ export function useWatchCharacters(valueToWatch, maxChars = 100){
     if(newValue.length === maxChars) {
       alert(`Only ${ maxChars } characters allowed`);
     }
-    
   })
 }

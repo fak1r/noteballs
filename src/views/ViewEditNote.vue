@@ -15,7 +15,7 @@
           Cancel
         </button>
         <button
-          @click="handleSaveNoteClicked"
+          @click="saveNote"
           :disabled="!noteContent"
           class="button is-link"
         >
@@ -34,11 +34,13 @@
 
 <script setup>
 
-  import { ref } from 'vue';
+  import { ref, onMounted, onUnmounted } from 'vue';
   import AddEditNote from '@/components/notes/AddEditNote.vue'
   import { useStoreNotes } from '@/stores/storeNotes'
   import { useRoute, useRouter } from 'vue-router';
-
+  import { useSaveNote } from '@/use/useSaveNote.js'
+  import { useWatchCharacters } from '@/use/useWatchCharacters.js'
+ 
   const noteContent = ref('');
   const storeNotes = useStoreNotes();
   const route = useRoute();
@@ -50,9 +52,27 @@
 
   noteContent.value = storeNotes.getNoteContent(route.params.id);
 
-  const handleSaveNoteClicked = () => {
+  const saveNote = () => {
     storeNotes.updateNote(route.params.id, noteContent.value);
     router.push({ name: 'notes' })
   }
+
+  useWatchCharacters(noteContent, 200);
+
+/*   
+  Enter to save note
+*/
+
+  const handleKeyDown = (event) => {
+    useSaveNote(event, saveNote);
+  };
+
+  onMounted(() => {
+    document.addEventListener('keydown', handleKeyDown);
+  });
+
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleKeyDown);
+  });
 
 </script>

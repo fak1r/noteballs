@@ -36,7 +36,6 @@ nav a.router-link-active {
 
 a{
   font-weight: bold;
-  /* color: #2a7955; */
 }
 
 

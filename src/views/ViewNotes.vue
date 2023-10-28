@@ -57,6 +57,7 @@
   import AddEditNote from '@/components/notes/AddEditNote.vue'
   import { useStoreNotes } from '@/stores/storeNotes.js'
   import { useWatchCharacters } from '@/use/useWatchCharacters.js'
+  import { useSaveNote } from '@/use/useSaveNote.js'
 
   const storeNotes = useStoreNotes();
 
@@ -65,10 +66,12 @@
   const addEditNoteRef = ref(null);
 
   const addNote = () => {
-    storeNotes.addNote(newNote.value);
+    if (newNote.value !== ''){
+      storeNotes.addNote(newNote.value);
 
-    newNote.value = '';
+      newNote.value = '';
 
+    }
     addEditNoteRef.value.focusTextarea();
   }
 
@@ -76,20 +79,23 @@
     newNote.value = '';
   }
 
-  useWatchCharacters(newNote, 100);
+  useWatchCharacters(newNote, 200);
 
-  /* const handleKeyboard = e => {
-    if (e.key === 'Enter' || newNote.value !== ''){
-      console.log('Enter');
-    } 
-  }
+/*   
+  Enter to add note
+*/
+
+  const handleKeyDown = (event) => {
+    useSaveNote(event, addNote);
+  };
 
   onMounted(() => {
-    document.addEventListener('keyup', handleKeyboard)
-  })
+    document.addEventListener('keydown', handleKeyDown);
+  });
 
   onUnmounted(() => {
-    document.removeEventListener('keyup', handleKeyboard)
-  }) */
-  
+    document.removeEventListener('keydown', handleKeyDown);
+  });
+
+
 </script>

@@ -32,19 +32,19 @@
         >
           <div class="navbar-end has-background-warning">
             <router-link
-              @click="showMobileNav = false"
+              @click="onCLickToLink"
               :to="{ name: 'notes'}"
               class="navbar-item"
               active-class="is-active">Notes</router-link
             >
             <router-link
-              @click="showMobileNav = false"
+              @click="onCLickToLink"
               :to="{ name: 'stats'}"
               class="navbar-item"
               active-class="is-active">Stats</router-link
             >
             <router-link
-              @click="showMobileNav = false"
+              @click="onClickAutorization"
               :to="{ name: 'auth'}"
               class="navbar-item"
               active-class="is-active">Autorization</router-link
@@ -80,6 +80,16 @@
   const logout = () => {
     showMobileNav.value = false;
     storeAuth.logoutUser();
+  }
+
+  const onClickAutorization = () => {
+    showMobileNav.value = false;
+    if (storeAuth.user.id) alert('You are already logged in');
+  }
+
+  const onCLickToLink = () => {
+    showMobileNav.value = false;
+    if (!storeAuth.user.id) alert('Please login or register')
   }
 </script>
 

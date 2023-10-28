@@ -18,7 +18,7 @@
           :placeholder="placeholder"
           ref="textareaRef"
           v-autofocus
-          maxlength="100"
+          maxlength="200"
         ></textarea>
       </div>
     </div>
@@ -34,6 +34,8 @@
 
   import { ref } from 'vue';
   import { vAutofocus } from '@/directives/vAutofocus.js'
+
+  const emit = defineEmits(['update:modelValue']);
 
   const props = defineProps({
     modelValue: {
@@ -62,5 +64,60 @@
   defineExpose({
     focusTextarea
   });
+
+/* 
+  Line break
+*/
+
+function ctrlShiftEnterLineBreak() {
+
+  const pressedKeys = new Set();
+
+  document.addEventListener('keydown', function(event) {
+
+    if (event.key === "Enter"){
+      event.preventDefault();
+    }
+
+    const target = event.target;
+    pressedKeys.add(event.code);
+
+    const shiftEnterPressed = pressedKeys.has('ShiftLeft') && pressedKeys.has('Enter');
+    const ctrlEnterPressed = pressedKeys.has('ControlLeft') && pressedKeys.has('Enter');
+
+    if (target === textareaRef.value) {
+      const textarea = textareaRef.value;
+      const selectionStart = textarea.selectionStart;
+      const selectionEnd = textarea.selectionEnd;
+
+      if (shiftEnterPressed || ctrlEnterPressed) {
+        // Get the current value of the textarea
+        const currentValue = textarea.value;
+
+        // Split the text into two parts (before and after the selection)
+        const beforeSelection = currentValue.substring(0, selectionStart);
+        const afterSelection = currentValue.substring(selectionEnd);
+
+        // Insert a newline character in the appropriate place
+        const newValue = beforeSelection + '\n' + afterSelection;
+
+        // Update the value of the textarea
+        textarea.value = newValue;
+
+        // Set the selection to after the inserted newline
+        textarea.selectionStart = selectionStart + 1;
+        textarea.selectionEnd = selectionStart + 1;
+
+        pressedKeys.delete(event.code);
+      } 
+    }
+
+    
+  });
+
+}
+
+ctrlShiftEnterLineBreak();
+
 
 </script>
