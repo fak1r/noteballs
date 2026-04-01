@@ -2,13 +2,32 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+const requiredFirebaseEnvVars = [
+  "VUE_APP_FIREBASE_API_KEY",
+  "VUE_APP_FIREBASE_AUTH_DOMAIN",
+  "VUE_APP_FIREBASE_PROJECT_ID",
+  "VUE_APP_FIREBASE_STORAGE_BUCKET",
+  "VUE_APP_FIREBASE_MESSAGING_SENDER_ID",
+  "VUE_APP_FIREBASE_APP_ID",
+];
+
+const missingFirebaseEnvVars = requiredFirebaseEnvVars.filter(
+  (envVar) => !process.env[envVar]
+);
+
+if (missingFirebaseEnvVars.length) {
+  throw new Error(
+    `Missing Firebase env vars: ${missingFirebaseEnvVars.join(", ")}`
+  );
+}
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDMHb7eMOEutF41OTPQA9OMAOcDu-ZYLDA",
-  authDomain: "noteballs-fb907.firebaseapp.com",
-  projectId: "noteballs-fb907",
-  storageBucket: "noteballs-fb907.appspot.com",
-  messagingSenderId: "799842719201",
-  appId: "1:799842719201:web:c1dafb44a6573320bb2ea0"
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -19,8 +38,3 @@ export {
   db,
   auth
 }
-
-
-
-
-

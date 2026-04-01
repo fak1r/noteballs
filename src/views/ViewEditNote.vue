@@ -40,6 +40,7 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useSaveNote } from '@/use/useSaveNote.js'
   import { useWatchCharacters } from '@/use/useWatchCharacters.js'
+  import { NOTE_MAX_LENGTH } from '@/js/noteLimits.js'
  
   const noteContent = ref('');
   const storeNotes = useStoreNotes();
@@ -57,7 +58,7 @@
     router.push({ name: 'notes' })
   }
 
-  useWatchCharacters(noteContent, 200);
+  useWatchCharacters(noteContent, NOTE_MAX_LENGTH);
 
 /*   
   Enter to save note

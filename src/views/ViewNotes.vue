@@ -58,6 +58,7 @@
   import { useStoreNotes } from '@/stores/storeNotes.js'
   import { useWatchCharacters } from '@/use/useWatchCharacters.js'
   import { useSaveNote } from '@/use/useSaveNote.js'
+  import { NOTE_MAX_LENGTH } from '@/js/noteLimits.js'
 
   const storeNotes = useStoreNotes();
 
@@ -79,7 +80,7 @@
     newNote.value = '';
   }
 
-  useWatchCharacters(newNote, 200);
+  useWatchCharacters(newNote, NOTE_MAX_LENGTH);
 
 /*   
   Enter to add note

@@ -18,7 +18,7 @@
           :placeholder="placeholder"
           ref="textareaRef"
           v-autofocus
-          maxlength="200"
+          :maxlength="NOTE_MAX_LENGTH"
         ></textarea>
       </div>
     </div>
@@ -34,6 +34,7 @@
 
   import { ref } from 'vue';
   import { vAutofocus } from '@/directives/vAutofocus.js'
+  import { NOTE_MAX_LENGTH } from '@/js/noteLimits.js'
 
   const emit = defineEmits(['update:modelValue']);
 
